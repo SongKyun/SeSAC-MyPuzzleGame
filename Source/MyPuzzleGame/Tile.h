@@ -6,16 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
-UENUM(BlueprintType)
-enum class ETileColor : uint8
-{
-	// UMETA 메타데이터를 추가할 때 사용하는 매크로이다.
-	Red UMETA(DisplayName = "Red"),
-	Green UMETA(DisplayName = "Green"),
-	Blue UMETA(DisplayName = "Blue"),
-	Yellow UMETA(DisplayName = "Yellow")
-};
-
 UCLASS()
 class MYPUZZLEGAME_API ATile : public AActor
 {
@@ -27,9 +17,10 @@ protected:
 public:
 	ATile();
 
-	// 타일의 색상
-	ETileColor TileColor;
-	// 랜덤 색상 설정
-	void SetRandomColor();
-	ETileColor GetTileColor() const;
+	// 타일의 색상 또는 모양을 저장하는 변수
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
+	FName TileType;
+
+	// 타일 매칭 확인 함수
+	bool IsMatching(ATile* OtherTile);
 };

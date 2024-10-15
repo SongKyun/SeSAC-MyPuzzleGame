@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TileGrid.generated.h"
 
+class ATile;
 UCLASS()
 class MYPUZZLEGAME_API ATileGrid : public AActor
 {
@@ -18,10 +19,22 @@ public:
 	ATileGrid();
 
 	// 그리드 크기
-	int32 GridSize;
-	// 그리드의 타일들
-	TArray<class ATile*> Tiles;
-	// 그리드 생성 함수
-	void CreateGrid(int32 Size);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Grid")
+	int32 GridWidth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Grid")
+	int32 GridHeight;
+	
+	// 타일을 1차원 배열로 관리
+	UPROPERTY()
+	TArray<ATile*> TileArray;
+
+	// 그리드 초기화 함수
+	void InitializeGrid();
+
+	// 특정 위치의 타일을 얻는 함수
+	ATile* GetTileAt(int32 x, int32 y) const;
+
+	// 특정 위치의 타일을 설정하는 함수
+	void SetTileAt(int32 x, int32 y, ATile* Tile);
 
 };

@@ -10,17 +10,9 @@ ATile::ATile()
 void ATile::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SetRandomColor();
 }
 
-void ATile::SetRandomColor()
+bool ATile::IsMatching(ATile* OtherTile)
 {
-	int32 RandomValue = FMath::RandRange(0, 3);
-	TileColor = static_cast<ETileColor>(RandomValue);
-}
-
-ETileColor ATile::GetTileColor() const
-{
-	return TileColor;
+	return TileType == OtherTile->TileType;
 }
