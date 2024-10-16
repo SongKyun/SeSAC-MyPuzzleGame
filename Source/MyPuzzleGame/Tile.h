@@ -17,6 +17,9 @@ protected:
 public:
 	ATile();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tile")
+	UStaticMeshComponent* TileMesh;
+
 	// 타일의 색상 또는 모양을 저장하는 변수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
 	FName TileType;

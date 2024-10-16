@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 
-class MYPUZZLEGAME_API SwapTilesCommand
+class MYPUZZLEGAME_API TileCommandInvoker
 {
 public:
-	SwapTilesCommand();
-	~SwapTilesCommand();
+	TileCommandInvoker();
+	~TileCommandInvoker();
 };

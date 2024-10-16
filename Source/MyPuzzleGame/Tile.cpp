@@ -5,6 +5,16 @@
 ATile::ATile()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	// 타일 메쉬 컴포넌트 생성 및 설정
+	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TileMesh"));
+	RootComponent = TileMesh;
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> Tile(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if (Tile.Succeeded())
+	{
+		TileMesh->SetStaticMesh(Tile.Object);
+	}
 }
 
 void ATile::BeginPlay()
