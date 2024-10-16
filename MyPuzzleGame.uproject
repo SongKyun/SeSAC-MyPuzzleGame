@@ -22,9 +22,5 @@
 				"Editor"
 			]
 		},
-		{
-			"Name": "Cargo",
-			"Enabled": true
-		}
 	]
 }
