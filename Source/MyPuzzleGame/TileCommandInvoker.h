@@ -3,10 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TileCommandInvoker.generated.h"
 
-class MYPUZZLEGAME_API TileCommandInvoker
+class ICommand;
+
+UCLASS()
+class MYPUZZLEGAME_API ATileCommandInvoker : public AActor
 {
+	GENERATED_BODY()
+
 public:
-	TileCommandInvoker();
-	~TileCommandInvoker();
+	ATileCommandInvoker();
+	~ATileCommandInvoker();
+
+	void ExecuteCommand(ICommand* Command);
+	void UndoLastCommand();
+
+private:
+	TArray<ICommand*> CommandHistory;
 };

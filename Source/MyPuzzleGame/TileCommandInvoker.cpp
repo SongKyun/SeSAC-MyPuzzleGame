@@ -2,11 +2,28 @@
 
 
 #include "TileCommandInvoker.h"
+#include "Command.h"
 
-TileCommandInvoker::TileCommandInvoker()
+ATileCommandInvoker::ATileCommandInvoker()
 {
 }
 
-TileCommandInvoker::~TileCommandInvoker()
+ATileCommandInvoker::~ATileCommandInvoker()
 {
+}
+
+void ATileCommandInvoker::ExecuteCommand(ICommand* Command)
+{
+	Command->Execute();
+	CommandHistory.Push(Command);
+}
+
+void ATileCommandInvoker::UndoLastCommand()
+{
+	if (CommandHistory.Num() > 0)
+	{
+		ICommand* lastCommand = CommandHistory.Last();
+		lastCommand->Undo();
+		CommandHistory.Pop();
+	}
 }
