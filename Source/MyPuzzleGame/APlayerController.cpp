@@ -41,7 +41,7 @@ void AAPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		// 마우스 클릭 입력 바인딩
-		EnhancedInputComp->BindAction(SelectTileAction, ETriggerEvent::Triggered, this, &AAPlayerController::SelectTile);
+		EnhancedInputComp->BindAction(SelectTileAction, ETriggerEvent::Started, this, &AAPlayerController::SelectTile);
 	}
 }
 
@@ -67,13 +67,20 @@ void AAPlayerController::SelectTile(const FInputActionValue& Value)
 			// 두 번째 타일을 선택하는 경우
 			else if (!SecondSelectedTile.IsValid() && ClickedTile != FirstSelectedTile)
 			{
-				// 두 번째 타일 선택
-				SecondSelectedTile = ClickedTile;
-				SecondSelectedTile -> SetSelected(true);
-				UE_LOG(LogTemp, Warning, TEXT("Second tile selected: %s"), *SecondSelectedTile->GetName());
+				if (FirstSelectedTile->IsAdjacentTo(ClickedTile)) // 인접 타일인지 확인
+				{
+					// 두 번째 타일 선택
+					SecondSelectedTile = ClickedTile;
+					SecondSelectedTile->SetSelected(true);
+					UE_LOG(LogTemp, Warning, TEXT("Second tile selected: %s"), *SecondSelectedTile->GetName());
 
-				// 두 타일 선택 완료 후 처리
-				ProcessSelectedTiles();
+					// 두 타일 선택 완료 후 처리
+					ProcessSelectedTiles();
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Tiles are not adjacent"));
+				}
 			}
 		}
 	}
@@ -81,10 +88,18 @@ void AAPlayerController::SelectTile(const FInputActionValue& Value)
 
 void AAPlayerController::ProcessSelectedTiles()
 {
-	if (FirstSelectedTile.IsValid() && SecondSelectedTile.IsValid())
+	if (!FirstSelectedTile.IsValid() || !SecondSelectedTile.IsValid())
 	{
-		// 두 개의 선택된 타일을 처리하는 로직
-		UE_LOG(LogTemp, Warning, TEXT("Processing thiles : %s and %s"), *FirstSelectedTile->GetName(), *SecondSelectedTile->GetName());
+		UE_LOG(LogTemp, Error, TEXT("Invalid tiles selected"));
+		return;
+	}
+
+	// 타일이 인접한지 확인
+	if (!FirstSelectedTile->IsAdjacentTo(SecondSelectedTile.Get()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tiles are not adjacent!"));
+		return;
+	}
 
 		// 교환 명령 생성
 		USwapTilesCommand* SwapCommand = NewObject <USwapTilesCommand>();
@@ -94,15 +109,22 @@ void AAPlayerController::ProcessSelectedTiles()
 		ATileCommandInvoker* CommandInvoker = GetWorld()->SpawnActor <ATileCommandInvoker>();
 		CommandInvoker->ExecuteCommand(SwapCommand);
 
-		// 두 타일의 선택 해제
-		FirstSelectedTile->SetSelected(false);
-		SecondSelectedTile->SetSelected(false);
-
-		// 타일 처리 로직 (교환, 매칭 확인 등)
+		// 타일 선택 해제
+		if (FirstSelectedTile.IsValid())FirstSelectedTile->SetSelected(false);
+		if (SecondSelectedTile.IsValid())SecondSelectedTile->SetSelected(false);
 
 		// 선택 초기화
-		FirstSelectedTile = nullptr;
-		SecondSelectedTile = nullptr;
-	}
+		if (FirstSelectedTile.IsValid())FirstSelectedTile = nullptr;
+		if (SecondSelectedTile.IsValid())SecondSelectedTile = nullptr;
+
+		//// 두 타일의 선택 해제1
+		//FirstSelectedTile->SetSelected(false);
+		//SecondSelectedTile->SetSelected(false);
+
+		//// 타일 처리 로직 (교환, 매칭 확인 등)
+
+		//// 선택 초기화
+		//FirstSelectedTile = nullptr;
+		//SecondSelectedTile = nullptr;
 }
 

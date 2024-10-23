@@ -14,6 +14,7 @@ ATile::ATile()
 	TileType = FName("Cube"); // 기본 타입 Cube로 설정 (나중에 랜덤)
 
 	bIsSelected = false; // 선택 여부 초기화
+	TilePosition = FVector2D::ZeroVector; // 그리드 상의 좌표
 }
 
 void ATile::SetSelected(bool bSelected)
@@ -86,5 +87,29 @@ void ATile::ProcessDataInParallel()
 		});
 
 	UE_LOG(LogTemp, Warning, TEXT("ParallelFor Finish"));
+}
+
+bool ATile::IsAdjacentTo(ATile* OtherTile) const
+{
+	if (!OtherTile)
+	{
+		return false;
+	}
+
+	// 두 타일의 그리드 좌표 차이를 계산하여 인접 여부 확인
+	int32 DeltaX = FMath::Abs(TilePosition.X - OtherTile->TilePosition.X);
+	int32 DeltaY = FMath::Abs(TilePosition.Y - OtherTile->TilePosition.Y);
+
+	// 두 타일이 가로 또는 세로로 1칸 차이일 경우 인접한 것으로 판단
+	return (DeltaX + DeltaY) == 1;
+
+	// 인접 여부를 확인 (가로 또는 세로로 한 칸 차이)
+	//return(FMath::Abs(TilePosition.X - OtherTile->TilePosition.X) == 1 && TilePosition.Y == OtherTile->TilePosition.Y) ||
+		//(FMath::Abs(TilePosition.Y - OtherTile->TilePosition.Y) == 1 && TilePosition.X == OtherTile->TilePosition.X);
+}
+
+void ATile::UpdateTilePosition(const FVector2D& NewPosition)
+{
+	TilePosition = NewPosition;
 }
 
