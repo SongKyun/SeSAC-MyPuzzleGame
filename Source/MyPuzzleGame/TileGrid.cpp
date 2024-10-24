@@ -3,6 +3,7 @@
 #include "TileGrid.h"
 #include "Tile.h"
 #include "Camera/CameraActor.h"
+#include "MyGameInstance.h"
 
 ATileGrid::ATileGrid()
 {
@@ -359,6 +360,8 @@ bool ATileGrid::GetTileGridPosition(ATile* Tile, int32& OutX, int32& OutY) const
 
 void ATileGrid::RemoveMatchingTiles(const TArray<ATile*>& MatchingTiles)
 {
+	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+
 	for (ATile* Tile : MatchingTiles)
 	{
 		if (Tile)
@@ -371,17 +374,19 @@ void ATileGrid::RemoveMatchingTiles(const TArray<ATile*>& MatchingTiles)
 				// 예시 : Tile->PlayDeleteAnimation(); /// 0.5초 동안 Scale을 0으로 줄이기
 				Tile->Destroy();
 			}
+
+			if (GameInstance)
+			{
+				GameInstance->AddScore(10);
+			}
 		}
 	}
-
-	// 매칭된 타일 수에 따라 점수 추가 예시
-	// AddScore(NumMatchedTiles * 100); 
 
 	// 빈 공간을 채우기 위해 타일을 아래로 드랍
 	DropDownTiles();
 
 	// 이후 매칭 루프 처리
-	ProcessMatchingLoop(); // 매칭 루프 시작
+	//ProcessMatchingLoop(); // 매칭 루프 시작
 }
 
 void ATileGrid::DropDownTiles()

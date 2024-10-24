@@ -4,6 +4,8 @@
 #include "SwapTilesCommand.h"
 #include "Tile.h"
 #include "TileGrid.h"
+#include "MyGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 void USwapTilesCommand::Initialize(ATile* InFirstTile, ATile* InSecondTile)
 {
@@ -17,15 +19,22 @@ void USwapTilesCommand::Initialize(ATile* InFirstTile, ATile* InSecondTile)
 
 void USwapTilesCommand::Execute()
 {
+
+	// 타일 그리드 가져오기 (FirstTile의 소속 그리드)
+	ATileGrid* TileGrid = FirstTile->TileGrid;
+
+	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(TileGrid->GetWorld()));
+	if (GameInstance)
+	{
+		GameInstance->DecreaseMoves(); // 스왑 시 이동 횟수 차감
+	}
+
 	// 유효성 확인
 	if (!FirstTile || !SecondTile)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Invalid Tiles for swapping"));
 		return;
 	}
-
-	// 타일 그리드 가져오기 (FirstTile의 소속 그리드)
-	ATileGrid* TileGrid = FirstTile->TileGrid;
 
 	// 그리드가 유효한지 확인
 	if (!TileGrid)

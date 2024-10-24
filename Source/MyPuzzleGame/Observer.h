@@ -27,4 +27,8 @@ public:
 	// BlueprintNativeEvent로 정의되어, C++ 또는 블루프린트에서 구현 가능
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Observer")
 	void OnNotify(int32 UpdatedScore);
+
+	// 남은 이동 횟수 알림 함수 추가
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Observer")
+	void OnNotifyRemainingMoves(int32 RemainingMoves);
 };

@@ -16,17 +16,17 @@ UCLASS()
 class MYPUZZLEGAME_API UGameStateSubject : public UObject
 {
 	GENERATED_BODY()
-	
+
 private:
-	// 옵저버 리스트 : 등록된 옵저버들이 상태 변화를 수신함
+	// 옵저버 리스트 : 등록된 옵저버들이 상태 변화를 수신함 - 관리
 	TArray <TScriptInterface<IObserver>> Observers;
 	
 	// 주체의 상태 정보 ( ex : 플레이어 점수 )
-	int32 PlayerScore;
+	//int32 PlayerScore;
 
 public:
 	// 생성자 : 초기 점수 설정
-	UGameStateSubject();
+	//UGameStateSubject();
 
 	// 옵저버 등록 : 주체가 상태 변화를 알릴 옵저버를 등록함
 	void RegisterObserver(TScriptInterface<IObserver> Observer);
@@ -34,12 +34,18 @@ public:
 	// 옵저버 등록 해제 : 상태 변화 알림을 중지할 옵저버를 제거함
 	void UnregisterObserver(TScriptInterface<IObserver> Observer);
 
+	// WorldContextObject를 매개변수로 받아서 처리
+	void NotifyObservers(UObject* WorldContextObject);
+
+	// 남은 이동 횟수 변경을 옵저버에게 알림
+	void NotifyObserversMoves(UObject* WorldContextObject);
+
 	// 상태 변화 발생 시 모든 옵저버에게 알림
-	void NotifyObservers();
+	//void NotifyObservers();
 
 	// 상태(점수)를 변경하는 함수 상태가 변경되면 NotifyObservers()가 호출됨
-	void IncreaseScore(int32 Amount);
+	//void IncreaseScore(int32 Amount);
 
 	// 현재 점수 반환
-	int32 GetScore() const { return PlayerScore; }
+	//int32 GetScore() const { return PlayerScore; }
 };
